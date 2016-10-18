@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="GBK" ?>
+<!-- 指定Struts 2配置文件的DTD信息 -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<!-- 配置Struts 2配置文件的根元素 -->
+<struts>
+     <!-- 使用Bean定义了一个UnknownHandler -->
+	<bean type="com.opensymphony.xwork2.UnknownHandler"
+		name="myHandler"
+		class="exception.MyUnknownException"/>  
+	<!-- Struts 2的Action必须放在包空间下定义 -->
+	<package name="en" extends="struts-default">
+		<!--定义获取图书的Action，对应实现类为 LoginAction-->
+		<action name="login" class="action.LoginAction">
+			<!-- 定义处理结果和视图资源之间映射关系 -->
+			<exception-mapping exception="action.MyException"
+				result="myexc"/>
+			<result name="error">/WEB-INF/content/error.jsp</result>
+			<result name="model" type="chain">login2</result>
+			<result name="success">/WEB-INF/content/welcome.jsp</result>
+		    <result name="myexc">/WEB-INF/content/exception.jsp</result>
+		</action>
+		<action name="login2" class="action.ModelAction">
+			<!-- 定义处理结果和视图资源之间映射关系 -->
+			<result name="error">/WEB-INF/content/error.jsp</result>
+			<result name="success">/WEB-INF/content/welcome.jsp</result>
+			
+		</action>
+		<action name="*action" class="action.LoginAction" method="{1}">
+			<result name="success">/WEB-INF/content/welcome.jsp</result>
+		</action>
+		<action name="*">
+			<result>/WEB-INF/content/loginForm.jsp</result>
+		</action>
+		<action name="myAction"/>
+	</package>
+	
+		
+	<!-- 指定一个新的package，该package的命名空间为book -->
+	<package name="get" extends="struts-default" namespace="/book">
+		<!--定义获取图书的Action，对应实现类为 ShowbookAction-->
+		<action name="getbooks" class="action.ShowbookAction">
+			<!-- 如果处理结果返回success，进入showBook.jsp页面 -->
+			<result name="success">/WEB-INF/content/showBook.jsp</result> 
+		</action>
+	</package>
+	<!-- 定义本系统的UnknownHandler栈 -->
+	<unknown-handler-stack>
+		<unknown-handler-ref name="myHandler" />
+	</unknown-handler-stack>
+
+	
+</struts>
+
